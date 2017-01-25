@@ -16,6 +16,9 @@ public class Avaliador {
 	private List<Lance> tresMaiores;
 
 	public void avalia(Leilao leilao) {
+		if(leilao.getLances().size() == 0)
+			throw new RuntimeException("Não é possivel avaliar um leilão sem lances");
+			
 		maiorDeTodos = leilao.getLances().stream().mapToDouble(Lance::getValor).max();
 		menorDeTodos = leilao.getLances().stream().mapToDouble(Lance::getValor).min();
 		mediaDosLances = leilao.getLances().stream().mapToDouble(Lance::getValor).average();

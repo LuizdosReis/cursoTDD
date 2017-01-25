@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,6 +46,13 @@ public class AvaliadorTest {
 
 	}
 
+	@Test(expected=RuntimeException.class)
+	public void naoDeveAvaliarLeilaoSemNenhumLanceDado(){
+		Leilao leilao = new criadorDeLeilao().para("Notebook Dell").constroi();
+		
+		leiloeiro.avalia(leilao);
+		
+	}
 
 	@Test
 	public void avaliaLancesEmOrdemDecrecente() {
@@ -166,18 +172,6 @@ public class AvaliadorTest {
 
 	}
 	
-	@Test
-	public void avaliaLeilaoVazio() {
-
-		Leilao leilao = new criadorDeLeilao().para("Playstation 3 Novo").constroi();
-
-		leiloeiro.avalia(leilao);
-
-		List<Lance> tresMaiores = leiloeiro.getTresMaiores();
-
-		assertEquals(0, tresMaiores.size());
-		
-	}
 	
 
 }
