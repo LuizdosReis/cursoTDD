@@ -1,6 +1,14 @@
 package br.com.caelum.leilao.dominio;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.*;
+
+import org.hamcrest.Matchers;
+
+import static br.com.caelum.leilao.matcher.LeilaoMatcher.temUm;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,13 +31,12 @@ public class LeilaoTest {
 	public void deveReceberUmLance(){
 		 criadorDeLeilao criadorDeLeilao = new criadorDeLeilao();
 		 Leilao leilao = criadorDeLeilao.para("Macbook").constroi();
-		
-		assertEquals(0, leilao.getLances().size());
+		 
+		 assertThat(leilao.getLances().size(),equalTo(0));
 		
 		leilao = criadorDeLeilao.lance(jobs, 2000.00).constroi();
 		
-		assertEquals(1,leilao.getLances().size());
-		assertEquals(2000.00, leilao.getLances().get(0).getValor(),0.0001);
+		assertThat(leilao, temUm(new Lance(jobs, 2000.00)));
 	}
 	
 	@Test
@@ -40,10 +47,10 @@ public class LeilaoTest {
 				.lance(wozniak, 3000.00)
 				.constroi();
 		
-		
-		assertEquals(2,leilao.getLances().size());
-		assertEquals(2000.00, leilao.getLances().get(0).getValor(),0.0001);
-		assertEquals(3000.00, leilao.getLances().get(1).getValor(),0.0001);
+		assertThat(leilao.getLances(), hasItems(
+				new Lance(jobs, 2000.00),
+				new Lance(wozniak, 3000.00)
+			));
 		
 	}
 	
@@ -54,9 +61,9 @@ public class LeilaoTest {
 				.lance(jobs, 3000.00)
 				.constroi();
 		
-		assertEquals(1,leilao.getLances().size());
-		assertEquals(2000.00, leilao.getLances().get(0).getValor(),0.0001);
-		
+		assertThat(leilao.getLances(), hasItems(
+				new Lance(jobs, 2000.00)
+			));		
 	}
 	
 	@Test
@@ -74,9 +81,20 @@ public class LeilaoTest {
 				.lance(wozniak, 11000.00)
 				.lance(jobs, 12000.00)				
 				.constroi();
-				
-		assertEquals(10,leilao.getLances().size());
-		assertEquals(11000.00, leilao.getLances().get(9).getValor(),0.0001);
+		
+		
+		assertThat(leilao.getLances(), hasItems(
+				new Lance(jobs, 2000.00),
+				new Lance(wozniak, 3000.00),
+				new Lance(jobs, 4000.00),
+				new Lance(wozniak, 5000.00),
+				new Lance(jobs, 6000.00),
+				new Lance(wozniak, 7000.00),
+				new Lance(jobs, 8000.00),
+				new Lance(wozniak, 9000.00),
+				new Lance(jobs, 10000.00),
+				new Lance(wozniak, 11000.00)			
+			));	
 		
 	}
 	
@@ -89,8 +107,7 @@ public class LeilaoTest {
 		
 		leilao.dobraLance(jobs);
 		
-		assertEquals(3,leilao.getLances().size());
-		assertEquals(4000.00, leilao.getLances().get(2).getValor(),0.0001);		
+		assertThat(leilao, temUm(new Lance(jobs, 4000.00)));
 	}
 	
 	
@@ -102,10 +119,8 @@ public class LeilaoTest {
 		
 		leilao.dobraLance(jobs);
 		
-		assertEquals(1,leilao.getLances().size());
-		assertEquals(3000.00, leilao.getLances().get(0).getValor(),0.0001);		
+		assertThat(leilao, not(temUm(new Lance(jobs, 4000.00))));	
 	}
-	
 	
 	@Test
 	public void devePegarOUltimoLanceDoUsuarioParaDobrar(){
@@ -122,8 +137,7 @@ public class LeilaoTest {
 		
 		leilao.dobraLance(jobs);
 		
-		assertEquals(9,leilao.getLances().size());
-		assertEquals(16000.00, leilao.getLances().get(8).getValor(),0.0001);		
+		assertThat(leilao, temUm(new Lance(jobs, 16000.00)));	
 	}
 	
 }
